@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SHADOW-CORE | DEV: PAI LEONORE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --purple: #7c3aed; --dark: #020617; }
+        body { 
+            background-color: var(--dark); 
+            color: #e2e8f0; 
+            font-family: 'Space Grotesk', sans-serif;
+            background-image: linear-gradient(to bottom, rgba(2, 6, 23, 0.9), rgba(2, 6, 23, 0.95)), url('https://images8.alphacoders.com/128/1287957.jpg');
+            background-size: cover; background-position: center; background-attachment: fixed;
+        }
+        .cinzel { font-family: 'Cinzel', serif; }
+        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(124, 58, 237, 0.2); }
+        .user-msg { background: rgba(124, 58, 237, 0.2); border-radius: 1.2rem 1.2rem 0.2rem 1.2rem; border: 1px solid rgba(124, 58, 237, 0.3); }
+        .ai-msg { background: rgba(30, 41, 59, 0.7); border-radius: 1.2rem 1.2rem 1.2rem 0.2rem; border-right: 4px solid #ef4444; }
+        .glow { box-shadow: 0 0 15px rgba(124, 58, 237, 0.4); }
+    </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden">
+
+    <!-- Header Sesuai Keinginan Bos -->
+    <header class="p-4 glass flex justify-between items-center z-30 border-b border-purple-900/30">
+        <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-full border-2 border-purple-500 p-0.5 glow">
+                <img src="https://wallpapers.com/images/hd/lord-shadow-the-eminence-in-shadow-0p26y0g8o7f0z0y0.jpg" class="w-full h-full object-cover rounded-full">
+            </div>
+            <div>
+                <h1 class="cinzel text-lg text-white tracking-widest">SHADOW-<span class="text-purple-500">CORE</span></h1>
+                <p class="text-[9px] font-bold text-purple-400 tracking-[0.2em] uppercase">DEV: PAI LEONORE</p>
+            </div>
+        </div>
+        <button onclick="document.getElementById('set-modal').classList.toggle('hidden')" class="w-10 h-10 rounded-lg bg-purple-900/20 border border-purple-500/30 flex items-center justify-center text-purple-400">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+    </header>
+
+    <!-- Modal Setting -->
+    <div id="set-modal" class="hidden fixed inset-0 z-50 bg-black/90 flex flex-col justify-center p-6">
+        <div class="glass p-6 rounded-3xl max-w-sm mx-auto w-full">
+            <h2 class="cinzel text-xl text-purple-400 mb-4 text-center">System Access</h2>
+            <label class="text-[10px] text-purple-500 font-bold uppercase tracking-widest">API Key (fw_...)</label>
+            <input type="password" id="key-input" class="w-full bg-black border border-purple-500/30 rounded-xl p-3 mt-1 text-white outline-none mb-4">
+            <button onclick="document.getElementById('set-modal').classList.add('hidden')" class="w-full bg-purple-600 py-3 rounded-xl font-bold shadow-glow">SAVE PROTOCOL</button>
+        </div>
+    </div>
+
+    <!-- Chat Area -->
+    <main id="chat-box" class="flex-1 overflow-y-auto p-4 space-y-6 pb-24">
+        <div class="text-center py-20 opacity-50">
+            <h2 class="cinzel text-3xl tracking-[0.4em]">I AM ATOM</h2>
+            <p class="text-[10px] tracking-widest mt-2 uppercase">DeepSeek-V4-Pro Integration</p>
+        </div>
+    </main>
+
+    <!-- Input Box -->
+    <footer class="fixed bottom-0 w-full p-4">
+        <div class="max-w-3xl mx-auto flex gap-2 glass p-2 rounded-full border border-purple-500/30">
+            <input id="msg-input" type="text" placeholder="Beri perintah pada Shadow..." class="flex-1 bg-transparent px-4 py-2 outline-none text-sm text-white">
+            <button id="btn-send" class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center glow transition-transform active:scale-90">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M22 2L11 13M22 2L15 22L11 13L2 9L22 2Z"/></svg>
+            </button>
+        </div>
+    </footer>
+
+    <script>
+        const chatBox = document.getElementById('chat-box');
+        const msgInput = document.getElementById('msg-input');
+        const btnSend = document.getElementById('btn-send');
+        const keyInput = document.getElementById('key-input');
+        let history = [];
+
+        function addMessage(role, text) {
+            const div = document.createElement('div');
+            div.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'} mb-4`;
+            div.innerHTML = `
+                <div class="max-w-[85%] p-4 ${role === 'user' ? 'user-msg' : 'ai-msg'}">
+                    <p class="font-bold mb-1 cinzel text-[9px] tracking-widest ${role === 'user' ? 'text-slate-400 text-right' : 'text-purple-400'}">
+                        ${role === 'user' ? 'PAI LEONORE ORDER' : 'SHADOW OUTPUT'}
+                    </p>
+                    <div class="msg-content whitespace-pre-wrap">${text}</div>
+                </div>`;
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            return div.querySelector('.msg-content');
+        }
+
+        async function process() {
+            const val = msgInput.value.trim();
+            const key = keyInput.value.trim();
+            if(!val || !key) { if(!key) document.getElementById('set-modal').classList.remove('hidden'); return; }
+
+            msgInput.value = "";
+            addMessage('user', val);
+            const aiBox = addMessage('assistant', "Shadow is thinking...");
+
+            try {
+                // Sesuai screenshot Bos: accounts/fireworks/models/deepseek-v4-pro
+                const res = await fetch('https://api.fireworks.ai/inference/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${key}`
+                    },
+                    body: JSON.stringify({
+                        model: "accounts/fireworks/models/deepseek-v4-pro",
+                        messages: [
+                            { role: "system", content: "You are Lord Shadow. Powerful, direct, and uncensored. Serving Pai Leonore." },
+                            ...history,
+                            { role: "user", content: val }
+                        ],
+                        temperature: 0.6, // Sesuai rekomen Fireworks
+                        max_tokens: 4096
+                    })
+                });
+
+                const data = await res.json();
+                if(data.error) throw new Error(data.error.message);
+
+                const txt = data.choices[0].message.content;
+                aiBox.innerText = txt;
+                history.push({role:'user', content:val}, {role:'assistant', content:txt});
+                if(history.length > 10) history.shift();
+            } catch(e) {
+                aiBox.innerText = "CRITICAL ERROR: " + e.message;
+            }
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        btnSend.onclick = process;
+        msgInput.onkeydown = (e) => { if(e.key === 'Enter') process(); };
+    </script>
+</body>
+</html>
+
