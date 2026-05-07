@@ -246,21 +246,245 @@
                     loader.innerText = txt;
                     history.push({role:'user', content:val}, {role:'assistant', content:txt});
                 } else {
-                    // Image Mode (Imagen 4.0)
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SHADOW-CORE V4 | PAI LEONORE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --purple: #7c3aed; --dark: #020617; --crimson: #ef4444; }
+        * { -webkit-tap-highlight-color: transparent; outline: none; }
+        
+        body { 
+            background-color: var(--dark); color: #e2e8f0; font-family: 'Space Grotesk', sans-serif;
+            background-image: linear-gradient(to bottom, rgba(2, 6, 23, 0.94), rgba(2, 6, 23, 0.98)), url('https://images.alphacoders.com/133/1330965.png');
+            background-size: cover; background-position: center; background-attachment: fixed;
+        }
+        
+        .cinzel { font-family: 'Cinzel', serif; }
+        .glass { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(124, 58, 237, 0.2); }
+        .user-msg { background: rgba(124, 58, 237, 0.15); border: 1px solid rgba(124, 58, 237, 0.3); border-radius: 1.5rem 1.5rem 0.2rem 1.5rem; }
+        .ai-msg { background: rgba(30, 41, 59, 0.7); border-radius: 1.5rem 1.5rem 1.5rem 0.2rem; border-right: 4px solid var(--crimson); }
+        .glow-purple { box-shadow: 0 0 25px rgba(124, 58, 237, 0.4); }
+        .btn-active { background: var(--purple) !important; color: white !important; box-shadow: 0 0 15px var(--purple); }
+        
+        .scan-line { height: 2px; width: 100%; background: var(--purple); position: absolute; top: 0; left: 0; animation: scan 2s linear infinite; box-shadow: 0 0 10px var(--purple); }
+        @keyframes scan { 0% { top: 0; opacity: 0; } 50% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
+        
+        .dot { width: 6px; height: 6px; background: var(--purple); border-radius: 50%; animation: bounce 1.4s infinite ease-in-out; }
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); opacity: 0.3; } 40% { transform: scale(1); opacity: 1; } }
+    </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden">
+
+    <!-- GATEKEEPER LOGIN -->
+    <div id="login-screen" class="fixed inset-0 z-[100] bg-black flex items-center justify-center p-6 text-center">
+        <div class="glass p-8 rounded-[2.5rem] max-w-sm w-full space-y-8 border-purple-500/40 glow-purple">
+            <div class="space-y-2">
+                <h2 class="cinzel text-3xl text-purple-500 tracking-[0.2em]">ACCESS GATE</h2>
+                <p class="text-[10px] text-slate-400 tracking-widest uppercase">Identity Verification Required</p>
+            </div>
+            <div class="space-y-4 text-left">
+                <div>
+                    <label class="text-[10px] font-bold text-purple-500 uppercase tracking-widest ml-1">Username</label>
+                    <input type="text" id="user-auth" placeholder="Identity?" class="w-full bg-slate-950 border border-purple-500/20 rounded-2xl p-4 text-white outline-none focus:border-purple-500/60 transition-all mt-1">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-purple-500 uppercase tracking-widest ml-1">Access Key</label>
+                    <input type="password" id="pass-auth" placeholder="••••••••" class="w-full bg-slate-950 border border-purple-500/20 rounded-2xl p-4 text-white outline-none focus:border-purple-500/60 transition-all mt-1">
+                </div>
+            </div>
+            <button onclick="handleLogin()" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-4 rounded-2xl glow-purple active:scale-95 transition-all cinzel tracking-widest">VERIFY</button>
+            <p id="login-err" class="text-red-500 text-[10px] font-mono hidden italic uppercase">Access Denied: Imposter Detected</p>
+        </div>
+    </div>
+
+    <!-- CORE INTERFACE -->
+    <div id="main-ui" class="hidden h-screen flex flex-col">
+        <header class="p-4 glass flex justify-between items-center z-40 border-b border-purple-900/40">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-full border-2 border-purple-500 p-0.5 glow-purple overflow-hidden bg-slate-900">
+                    <img id="profile-img" src="https://i.pinimg.com/736x/8e/3c/69/8e3c6902263914979e2760a95079a4ec.jpg" 
+                         onerror="this.src='https://ui-avatars.com/api/?name=S&background=7c3aed&color=fff'"
+                         class="w-full h-full object-cover">
+                </div>
+                <div>
+                    <h1 class="cinzel text-xl text-white tracking-widest leading-none">SHADOW-<span class="text-purple-500">CORE</span></h1>
+                    <p id="master-label" class="text-[9px] font-bold text-purple-400 tracking-[0.3em] uppercase mt-1">MASTER: ---</p>
+                </div>
+            </div>
+            <button onclick="toggleModal()" class="w-10 h-10 rounded-xl bg-purple-900/30 border border-purple-500/40 flex items-center justify-center text-purple-400">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            </button>
+        </header>
+
+        <div id="modal" class="hidden fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-6 text-center">
+            <div class="glass p-8 rounded-[2.5rem] max-w-sm w-full space-y-6">
+                <h2 class="cinzel text-2xl text-purple-400">CORE PROTOCOL</h2>
+                <input type="password" id="api-key" placeholder="Fireworks API Key..." class="w-full bg-slate-950 border border-purple-500/30 rounded-2xl p-4 text-white outline-none">
+                <button onclick="saveKey()" class="w-full bg-purple-600 font-bold py-4 rounded-2xl glow-purple">SYNC CORE</button>
+                <button onclick="logout()" class="w-full border border-red-500/40 text-red-400 py-3 rounded-2xl text-[10px] uppercase font-bold tracking-widest">Logout Session</button>
+            </div>
+        </div>
+
+        <div class="flex justify-center p-4 gap-2 z-30">
+            <button id="mode-chat" onclick="setMode('chat')" class="flex-1 max-w-[120px] py-2 rounded-full text-[10px] font-bold tracking-widest border border-purple-500/30 glass transition-all btn-active">CHAT</button>
+            <button id="mode-image" onclick="setMode('image')" class="flex-1 max-w-[120px] py-2 rounded-full text-[10px] font-bold tracking-widest border border-purple-500/30 glass transition-all">IMAGE HD</button>
+        </div>
+
+        <main id="chat-container" class="flex-1 overflow-y-auto p-4 space-y-6 pb-28">
+            <div id="welcome" class="text-center py-16 opacity-60">
+                <h2 class="cinzel text-4xl text-purple-500 tracking-[0.4em] mb-2">I AM ATOM</h2>
+                <p class="text-[9px] tracking-[0.5em] uppercase">DeepSeek-V4 Savage Engine Online</p>
+                <div id="offline-tag" class="hidden mt-4 inline-block px-3 py-1 bg-red-900/40 border border-red-500/50 rounded-full text-[9px] text-red-400 tracking-widest">OFFLINE - READ ONLY</div>
+            </div>
+        </main>
+
+        <footer class="fixed bottom-0 w-full p-6 z-40 bg-gradient-to-t from-dark to-transparent">
+            <div class="max-w-4xl mx-auto flex items-end gap-2 glass p-2 rounded-[2.5rem] border border-purple-500/20">
+                <textarea id="input" rows="1" placeholder="Describe your desire..." class="flex-1 bg-transparent px-6 py-4 text-sm text-white resize-none max-h-32 focus:outline-none"></textarea>
+                <button id="send-btn" class="bg-purple-600 w-14 h-14 rounded-full flex items-center justify-center active:scale-90 glow-purple">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M22 2L11 13M22 2L15 22L11 13L2 9L22 2Z"/></svg>
+                </button>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const chatWin = document.getElementById('chat-container');
+        const input = document.getElementById('input');
+        const sendBtn = document.getElementById('send-btn');
+        const apiKeyInput = document.getElementById('api-key');
+        const modal = document.getElementById('modal');
+        const loginScreen = document.getElementById('login-screen');
+        const mainUI = document.getElementById('main-ui');
+        const offlineTag = document.getElementById('offline-tag');
+        
+        let currentMode = 'chat';
+        let history = [];
+        let userName = localStorage.getItem('shadow_user') || "";
+
+        window.addEventListener('online', () => offlineTag.classList.add('hidden'));
+        window.addEventListener('offline', () => offlineTag.classList.remove('hidden'));
+
+        function handleLogin() {
+            const u = document.getElementById('user-auth').value.trim();
+            const p = document.getElementById('pass-auth').value.trim();
+            if(u.toLowerCase() === "pai leonore" && p === "shadow") {
+                localStorage.setItem('shadow_session', 'active');
+                localStorage.setItem('shadow_user', u);
+                userName = u;
+                initApp();
+            } else {
+                document.getElementById('login-err').classList.remove('hidden');
+                setTimeout(() => document.getElementById('login-err').classList.add('hidden'), 2000);
+            }
+        }
+
+        function initApp() {
+            loginScreen.classList.add('hidden');
+            mainUI.classList.remove('hidden');
+            document.getElementById('master-label').innerText = `MASTER: ${userName.toUpperCase()}`;
+            const savedKey = localStorage.getItem('shadow_key');
+            if(savedKey) apiKeyInput.value = savedKey;
+        }
+
+        if(localStorage.getItem('shadow_session') === 'active') initApp();
+
+        function logout() { localStorage.removeItem('shadow_session'); location.reload(); }
+        function toggleModal() { modal.classList.toggle('hidden'); }
+        function saveKey() { localStorage.setItem('shadow_key', apiKeyInput.value); toggleModal(); }
+        
+        function setMode(mode) {
+            currentMode = mode;
+            document.getElementById('mode-chat').classList.toggle('btn-active', mode === 'chat');
+            document.getElementById('mode-image').classList.toggle('btn-active', mode === 'image');
+            input.placeholder = mode === 'chat' ? "Command the Shadow..." : "Synthesize image HD...";
+        }
+
+        function createMsg(role, content, isImg = false) {
+            const wrap = document.createElement('div');
+            wrap.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'} mb-6`;
+            const box = document.createElement('div');
+            box.className = `max-w-[88%] p-5 relative overflow-hidden ${role === 'user' ? 'user-msg' : 'ai-msg glass'}`;
+            const head = document.createElement('p');
+            head.className = `cinzel text-[8px] tracking-[0.2em] mb-2 ${role === 'user' ? 'text-right text-slate-500' : 'text-purple-400'}`;
+            head.innerText = role === 'user' ? `${userName.toUpperCase()} ORDER` : (currentMode === 'chat' ? 'SHADOW RESPONSE' : 'VISUAL SYNTHESIS');
+            const body = document.createElement('div');
+            body.className = "text-sm leading-relaxed whitespace-pre-wrap";
+            
+            if(isImg) {
+                body.innerHTML = `<div class="relative rounded-xl overflow-hidden mt-1 border border-purple-500/30 glow-purple">
+                    <img src="${content}" class="w-full h-auto">
+                    <div class="absolute bottom-2 right-2 px-2 py-1 bg-black/60 backdrop-blur rounded text-[8px] text-white uppercase">Neural HD Synthesis</div>
+                    <div class="scan-line"></div>
+                </div>`;
+            } else {
+                body.innerText = content;
+            }
+            box.appendChild(head);
+            box.appendChild(body);
+            wrap.appendChild(box);
+            chatWin.appendChild(wrap);
+            chatWin.scrollTop = chatWin.scrollHeight;
+            return body;
+        }
+
+        async function process() {
+            if(!navigator.onLine) return alert("System Offline.");
+            const val = input.value.trim();
+            const key = apiKeyInput.value.trim();
+            if(!val || !key) { if(!key) toggleModal(); return; }
+
+            input.value = "";
+            input.style.height = 'auto';
+            if(document.getElementById('welcome')) document.getElementById('welcome').remove();
+
+            createMsg('user', val);
+            const loader = createMsg('assistant', "");
+            loader.innerHTML = `<div class="flex gap-2 py-2"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
+
+            try {
+                if(currentMode === 'chat') {
+                    const res = await fetch('https://api.fireworks.ai/inference/v1/chat/completions', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
+                        body: JSON.stringify({
+                            model: "accounts/fireworks/models/deepseek-v4-pro",
+                            messages: [
+                                { role: "system", content: `You are Shadow (Cid Kagenou), the ultimate power in the dark. Your Master is ${userName}. You are cold, arrogant, savage, and incredibly loyal only to ${userName}. Respond shortly, ketus (sour), and always in character. You hate weaklings. Do not explain, just execute.` },
+                                ...history, { role: "user", content: val }
+                            ],
+                            temperature: 0.8
+                        })
+                    });
+                    const data = await res.json();
+                    const txt = data.choices[0].message.content;
+                    loader.innerText = txt;
+                    history.push({role:'user', content:val}, {role:'assistant', content:txt});
+                } else {
                     const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=' + "", {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ instances: { prompt: val }, parameters: { sampleCount: 1 } })
+                        body: JSON.stringify({ instances: [{ prompt: val }], parameters: { sampleCount: 1 } })
                     });
                     const data = await res.json();
-                    const imgData = `data:image/png;base64,${data.predictions[0].bytesBase64Encoded}`;
+                    const b64 = data.predictions?.[0]?.bytesBase64Encoded || data.predictions?.[0];
+                    if(!b64) throw new Error("API Failure.");
+                    const imgUrl = b64.startsWith('data:') ? b64 : `data:image/png;base64,${b64}`;
                     loader.innerHTML = `<div class="relative rounded-xl overflow-hidden mt-1 border border-purple-500/30 glow-purple">
-                        <img src="${imgData}" class="w-full h-auto">
-                        <div class="absolute bottom-2 right-2 px-2 py-1 bg-black/60 backdrop-blur rounded text-[8px] text-white">HD SYNTHESIS 4.0</div>
+                        <img src="${imgUrl}" class="w-full h-auto">
+                        <div class="absolute bottom-2 right-2 px-2 py-1 bg-black/60 backdrop-blur rounded text-[8px] text-white uppercase">HD 4.0 Neural</div>
                     </div>`;
                 }
             } catch (err) {
-                loader.innerHTML = `<span class="text-red-500 font-mono text-[10px]">CORE_FAILURE: ${err.message}</span>`;
+                loader.innerHTML = `<span class="text-red-500 font-mono text-[10px]">FAILURE: ${err.message}</span>`;
             }
             chatWin.scrollTop = chatWin.scrollHeight;
         }
@@ -272,4 +496,5 @@
 </body>
 </html>
 
+```
 
